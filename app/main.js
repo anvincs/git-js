@@ -4,12 +4,27 @@ import path from "path";
 import { GitClient } from "./git/client.js";
 
 // Commands
-
-import { CatFileCommand } from "./git/commands/index.js";
+import { CatFileCommand, HashObjectCommand } from "./git/commands/index.js";
 
 console.error("Logs from your program will appear here!");
 
 const gitclient = new GitClient();
+
+const command = process.argv[2];
+
+switch (command) {
+  case "init":
+    createGitDirectory();
+    break;
+  case "cat-file":
+    handleCatFileCommand();
+    break;
+  case "hash-object":
+    handleHashObjectCommand();
+    break;
+  default:
+    throw new Error(`Unknown command ${command}`);
+}
 
 function createGitDirectory() {
   fs.mkdirSync(path.join(process.cwd(), ".git"), { recursive: true });
@@ -25,23 +40,23 @@ function createGitDirectory() {
   console.log("Initialized git directory");
 }
 
-const handleCatFileCommand = () => {
+function handleCatFileCommand() {
   const flag = process.argv[3];
   const commitSHA = process.argv[4];
 
   const command = new CatFileCommand(flag, commitSHA);
   gitclient.run(command);
-};
+}
 
-const command = process.argv[2];
+function handleHashObjectCommand() {
+  let flag = process.argv[3];
+  let filePath = process.argv[4];
 
-switch (command) {
-  case "init":
-    createGitDirectory();
-    break;
-  case "cat-file":
-    handleCatFileCommand();
-    break;
-  default:
-    throw new Error(`Unknown command ${command}`);
+  if (!filePath) {
+    filePath = flag;
+    flag = null;
+  }
+
+  const command = new HashObjectCommand(flag, filePath);
+  gitclient.run(command);
 }
