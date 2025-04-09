@@ -21,7 +21,7 @@ class CatFileCommand {
 
           const completePath = path.join(
             process.cwd(),
-            ".git",
+            "test-.git-dir",
             "objects",
             folder,
             file

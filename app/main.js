@@ -6,8 +6,6 @@ import { GitClient } from "./git/client.js";
 // Commands
 import { CatFileCommand, HashObjectCommand } from "./git/commands/index.js";
 
-console.error("Logs from your program will appear here!");
-
 const gitclient = new GitClient();
 
 const command = process.argv[2];
