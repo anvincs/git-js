@@ -8,6 +8,7 @@ import {
   CatFileCommand,
   HashObjectCommand,
   LSTreeCommand,
+  WriteTreeCommand,
 } from "./git/commands/index.js";
 
 const gitclient = new GitClient();
@@ -26,6 +27,9 @@ switch (command) {
     break;
   case "ls-tree":
     handleLSTreeCommand();
+    break;
+  case "write-tree":
+    handleWriteTreeCommand();
     break;
   default:
     throw new Error(`Unknown command ${command}`);
@@ -80,5 +84,10 @@ function handleLSTreeCommand() {
   }
 
   const command = new LSTreeCommand(flag, sha);
+  gitclient.run(command);
+}
+
+function handleWriteTreeCommand() {
+  const command = new WriteTreeCommand();
   gitclient.run(command);
 }
