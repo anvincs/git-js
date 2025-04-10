@@ -6,6 +6,7 @@ import { GitClient } from "./git/client.js";
 // Commands
 import {
   CatFileCommand,
+  CommitTreeCommand,
   HashObjectCommand,
   LSTreeCommand,
   WriteTreeCommand,
@@ -30,6 +31,9 @@ switch (command) {
     break;
   case "write-tree":
     handleWriteTreeCommand();
+    break;
+  case "commit-tree":
+    handleCommitTreeCommand();
     break;
   default:
     throw new Error(`Unknown command ${command}`);
@@ -89,5 +93,15 @@ function handleLSTreeCommand() {
 
 function handleWriteTreeCommand() {
   const command = new WriteTreeCommand();
+  gitclient.run(command);
+}
+
+function handleCommitTreeCommand() {
+  // commit-tree <tree_sha> -p <commit_sha> -m <message>
+  const treeSHA = process.argv[3];
+  const commitSHA = process.argv[5];
+  const commitMessage = process.argv[7];
+
+  const command = new CommitTreeCommand(treeSHA, commitSHA, commitMessage);
   gitclient.run(command);
 }
