@@ -4,7 +4,11 @@ import path from "path";
 import { GitClient } from "./git/client.js";
 
 // Commands
-import { CatFileCommand, HashObjectCommand } from "./git/commands/index.js";
+import {
+  CatFileCommand,
+  HashObjectCommand,
+  LSTreeCommand,
+} from "./git/commands/index.js";
 
 const gitclient = new GitClient();
 
@@ -19,6 +23,9 @@ switch (command) {
     break;
   case "hash-object":
     handleHashObjectCommand();
+    break;
+  case "ls-tree":
+    handleLSTreeCommand();
     break;
   default:
     throw new Error(`Unknown command ${command}`);
@@ -56,5 +63,22 @@ function handleHashObjectCommand() {
   }
 
   const command = new HashObjectCommand(flag, filePath);
+  gitclient.run(command);
+}
+
+function handleLSTreeCommand() {
+  let flag = process.argv[3];
+  let sha = process.argv[4];
+
+  if (!sha && flag == "--name-only") {
+    return;
+  }
+
+  if (!sha) {
+    sha = flag;
+    flag = null;
+  }
+
+  const command = new LSTreeCommand(flag, sha);
   gitclient.run(command);
 }
